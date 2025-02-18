@@ -7,9 +7,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    // Mock authentication - in a real app, this would be handled by your auth system
-    localStorage.setItem('isAuthenticated', 'true');
-    navigate("/finops");
+    navigate("/login");
   };
 
   return (

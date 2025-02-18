@@ -3,151 +3,186 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
   Drawer,
-  AppBar,
-  Toolbar,
   List,
   Typography,
-  Divider,
-  IconButton,
   ListItem,
   ListItemIcon,
   ListItemText,
   Avatar,
+  Button,
+  Chip,
 } from '@mui/material';
 import {
-  Menu as MenuIcon,
   Dashboard as DashboardIcon,
   Assignment as TasksIcon,
   Inventory as InventoryIcon,
   Security as ComplianceIcon,
   AttachMoney as FinOpsIcon,
-  Search as SearchIcon,
-  Notifications as NotificationsIcon,
+  Settings as SettingsIcon,
   Help as HelpIcon,
 } from '@mui/icons-material';
+import { auth } from '../config/firebase';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const menuItems = [
-  { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+  { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
   { text: 'Tasks', icon: <TasksIcon />, path: '/tasks' },
   { text: 'Inventory', icon: <InventoryIcon />, path: '/inventory' },
   { text: 'Compliance', icon: <ComplianceIcon />, path: '/compliance' },
   { text: 'FinOps', icon: <FinOpsIcon />, path: '/finops' },
 ];
 
+const bottomMenuItems = [
+  { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
+  { text: 'Help', icon: <HelpIcon />, path: '/help' },
+];
+
 export default function Layout({ children }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  const user = auth.currentUser;
 
   const drawer = (
-    <div>
-      <Toolbar>
-        <Typography variant="h6" noWrap component="div">
-          SofClo
-        </Typography>
-      </Toolbar>
-      <Divider />
-      <List>
-        {menuItems.map((item) => (
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Logo and App Name */}
+      <Box sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Avatar sx={{ bgcolor: 'primary.main', width: 40, height: 40 }}>S</Avatar>
+        <Box>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>SofClo</Typography>
+          <Typography variant="caption" color="text.secondary">Software Asset Management</Typography>
+        </Box>
+      </Box>
+
+      {/* Main Navigation */}
+      <List sx={{ px: 2, py: 1, flex: 1 }}>
+        {menuItems.map((item) => {
+          const isSelected = location.pathname === item.path;
+          return (
+            <ListItem
+              button
+              key={item.text}
+              onClick={() => navigate(item.path)}
+              sx={{
+                borderRadius: 2,
+                mb: 1,
+                bgcolor: isSelected ? 'primary.light' : 'transparent',
+                color: isSelected ? 'primary.main' : 'text.primary',
+                '&:hover': {
+                  bgcolor: isSelected ? 'primary.light' : 'action.hover',
+                },
+              }}
+            >
+              <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText 
+                primary={item.text} 
+                primaryTypographyProps={{
+                  fontSize: '0.95rem',
+                  fontWeight: isSelected ? 600 : 400,
+                }}
+              />
+              {item.text === 'Tasks' && (
+                <Chip 
+                  label="5" 
+                  size="small" 
+                  color={isSelected ? "primary" : "default"}
+                  sx={{ ml: 1 }}
+                />
+              )}
+            </ListItem>
+          );
+        })}
+      </List>
+
+      {/* Bottom Navigation */}
+      <List sx={{ px: 2, py: 1 }}>
+        {bottomMenuItems.map((item) => (
           <ListItem
             button
             key={item.text}
             onClick={() => navigate(item.path)}
-            selected={location.pathname === item.path}
+            sx={{
+              borderRadius: 2,
+              mb: 1,
+              color: 'text.secondary',
+              '&:hover': {
+                bgcolor: 'action.hover',
+              },
+            }}
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
+            <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText 
+              primary={item.text}
+              primaryTypographyProps={{
+                fontSize: '0.95rem',
+              }}
+            />
           </ListItem>
         ))}
       </List>
-    </div>
+
+      {/* User Profile Section */}
+      <Box sx={{ p: 2, mt: 'auto' }}>
+        <Button
+          fullWidth
+          sx={{
+            justifyContent: 'flex-start',
+            px: 2,
+            py: 1.5,
+            bgcolor: 'background.default',
+            borderRadius: 2,
+            '&:hover': {
+              bgcolor: 'action.hover',
+            },
+          }}
+        >
+          <Avatar
+            src={user?.photoURL}
+            alt={user?.displayName || 'User'}
+            sx={{ width: 32, height: 32, mr: 1.5 }}
+          />
+          <Box sx={{ textAlign: 'left' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              {user?.displayName || 'User'}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {user?.email}
+            </Typography>
+          </Box>
+        </Button>
+      </Box>
+    </Box>
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
+      <Drawer
+        variant="permanent"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-          bgcolor: 'background.paper',
-          color: 'text.primary',
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+            border: 'none',
+            bgcolor: 'background.paper',
+            boxShadow: 1,
+          },
         }}
       >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <IconButton color="inherit">
-              <SearchIcon />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <IconButton color="inherit">
-              <NotificationsIcon />
-            </IconButton>
-            <IconButton color="inherit">
-              <HelpIcon />
-            </IconButton>
-            <Avatar sx={{ width: 32, height: 32 }} />
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-      >
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-            },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Box>
+        {drawer}
+      </Drawer>
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          mt: 8,
+          bgcolor: '#F7F9FC',
+          overflow: 'auto',
         }}
       >
         {children}

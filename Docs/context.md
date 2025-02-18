@@ -5,79 +5,136 @@ SofClo is a cloud-native platform revolutionizing Software Asset Management (SAM
 
 ## Core Features
 
-### 1. User Authentication & Onboarding
-- Multi-factor authentication (Email, SSO, Enterprise)
-- Role-based onboarding (SAM Manager, FinOps Analyst, IT Asset Manager)
-- Interactive platform tutorial
+### 1. User Authentication & Authorization
+- Firebase Authentication integration
+- Protected routes with role-based access
+- Secure session management
+- Automatic profile loading
 
-### 2. Dashboard
-- Task activity overview
-- Real-time compliance monitoring
-- Key metrics display:
-  - License utilization
-  - Compliance status
-  - Cost optimization opportunities
-  - Contract renewal tracking
+### 2. Dashboard & Analytics
+- Real-time metrics visualization:
+  - Total Licenses
+  - Active Users
+  - Compliance Rate
+  - Cost Optimization
+- Program Maturity Assessment:
+  - Strategy & Governance
+  - Process & Automation
+  - Technology & Tools
+  - People & Skills
+  - Vendor Management
+- Stakeholder Management:
+  - Name and Role tracking
+  - Status monitoring (active/inactive)
+  - Priority levels (high/medium/low)
+- Compliance Status:
+  - Compliant assets
+  - Non-compliant assets
+  - At-risk assets
 
-### 3. Task Management
-- Comprehensive task creation and tracking
-- Categories:
-  - License compliance
-  - Cost optimization
-  - Procurement management
-  - Vendor relations
-  - Audit preparation
-- Task attributes:
-  - Priority levels
-  - Status tracking
-  - Collaboration tools
-  - Document management
+### 3. State Management
+- Zustand for global state management
+- Profile store for user data
+- Dashboard data persistence
+- Real-time updates
 
-### 4. Software Inventory Management
-- Centralized asset repository
-- License lifecycle management
-- Usage optimization tools
-- IT asset integration capabilities
+### 4. Data Structure
+```typescript
+interface DashboardFormData {
+  metrics: {
+    totalLicenses: number;
+    activeUsers: number;
+    complianceRate: number;
+    costOptimization: number;
+  };
+  maturityScores: {
+    [key: string]: number;  // Score from 0-5
+  };
+  complianceStatus: {
+    compliant: number;
+    nonCompliant: number;
+    atRisk: number;
+  };
+  stakeholders: Array<{
+    name: string;
+    role: string;
+    status: 'active' | 'inactive';
+    priority: 'high' | 'medium' | 'low';
+  }>;
+}
+```
 
-### 5. Compliance & Audit Tools
-- Regulatory compliance monitoring
-- Usage violation detection
-- Automated audit reporting
-- License renewal alerts
+### 5. UI Components
+- Material-UI integration
+- Responsive layout with sidebar
+- Modern card-based design
+- Form validation and error handling
+- Toast notifications for user feedback
 
-### 6. FinOps Integration
-- Spend analysis and forecasting
-- Cost optimization recommendations
-- Vendor negotiation insights
-- ROI reporting tools
+### 6. Database Schema (Firestore)
+```typescript
+organizations/{orgId} {
+  name: string;
+  dashboardData: DashboardFormData;
+}
 
-### 7. Collaboration Features
-- Role-based access control
-- Integrated communication system
-- Automated notifications
-- Customizable reporting
+users/{userId} {
+  organizationId: string;
+  // other user data
+}
+```
 
-### 8. Workflow Automation
-- Custom workflow configuration
-- Visual workflow builder
-- Third-party tool integration
-  - Jira
-  - ServiceNow
-  - Slack
+## Technical Stack
 
-### 9. Community Engagement
-- User feedback system
-- Regular platform updates
-- Comprehensive knowledge base
-- Best practice sharing
+### Frontend
+- React with TypeScript
+- Material-UI for components
+- Zustand for state management
+- React Router for navigation
 
-### 10. Security Framework
-- End-to-end encryption
-- Granular access controls
-- Regulatory compliance
-  - GDPR
-  - SOC 2
-- Regular security assessments
+### Authentication & Database
+- Firebase Authentication
+- Firestore for data storage
+- Real-time data synchronization
+
+### Development Tools
+- TypeScript for type safety
+- ESLint for code quality
+- Modern ES6+ features
+
+## Implementation Notes
+
+### Protected Routes
+- Implemented using React Router
+- Authentication state check
+- Loading states with Material-UI
+- Redirect to login if unauthorized
+
+### Profile Management
+- Automatic profile loading on auth
+- Organization data persistence
+- Logout functionality
+- Session management
+
+### Form Validation
+- Input validation for all fields
+- Numeric constraints for metrics
+- Required fields enforcement
+- Error messaging
+
+### Data Flow
+1. User authentication
+2. Profile/Organization loading
+3. Dashboard data retrieval
+4. Real-time updates
+5. Firestore persistence
+
+## Future Enhancements
+1. Advanced analytics dashboard
+2. Export functionality
+3. Batch operations
+4. Advanced search capabilities
+5. Custom reporting tools
 
 ## Technical Architecture
 
@@ -328,4 +385,3 @@ sofclo/
 ├── firestore.rules       # Firestore security rules
 ├── storage.rules         # Storage security rules
 └── package.json
-```
