@@ -2,11 +2,7 @@ import {
   doc, 
   getDoc, 
   setDoc, 
-  updateDoc, 
-  collection,
-  getDocs,
-  query,
-  where,
+  updateDoc
 } from 'firebase/firestore';
 import { db, auth } from '../config/firebase';
 import type { DashboardFormData } from './types';
