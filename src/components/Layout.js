@@ -43,6 +43,7 @@ import {
   Bell as BellIcon,
   ChevronDown as ChevronDownIcon,
 } from 'lucide-react';
+import { auth } from '../config/firebase';
 
 const drawerWidth = 280;
 const minimizedDrawerWidth = 80;
@@ -83,6 +84,7 @@ export default function Layout({ children }) {
     { id: 3, text: 'Team meeting in 30 minutes', time: '2h ago' },
   ]);
   const theme = useTheme();
+  const [user] = React.useState(auth.currentUser);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -111,7 +113,8 @@ export default function Layout({ children }) {
       display: 'flex', 
       flexDirection: 'column', 
       height: '100%',
-      pt: 2 
+      pt: 2,
+      overflow: 'hidden'
     }}>
       <Box sx={{ 
         display: 'flex', 
@@ -126,7 +129,7 @@ export default function Layout({ children }) {
         </IconButton>
       </Box>
       <List sx={{ 
-        px: 2, 
+        px: minimized ? 1 : 2,
         display: 'flex', 
         flexDirection: 'column', 
         gap: 0.5 
@@ -138,6 +141,9 @@ export default function Layout({ children }) {
             selected={location.pathname === item.path}
             sx={{
               borderRadius: 2,
+              minHeight: 44,
+              justifyContent: minimized ? 'center' : 'flex-start',
+              px: minimized ? 1.5 : 2,
               '&.Mui-selected': {
                 backgroundColor: 'primary.lighter',
                 color: 'primary.main',
@@ -147,7 +153,12 @@ export default function Layout({ children }) {
               },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 40 }}>
+            <ListItemIcon 
+              sx={{ 
+                minWidth: minimized ? 'auto' : 40,
+                mr: minimized ? 0 : 2
+              }}
+            >
               <item.icon
                 size={20}
                 color={location.pathname === item.path ? 'currentColor' : undefined}
@@ -164,6 +175,9 @@ export default function Layout({ children }) {
             selected={location.pathname === item.path}
             sx={{
               borderRadius: 2,
+              minHeight: 44,
+              justifyContent: minimized ? 'center' : 'flex-start',
+              px: minimized ? 1.5 : 2,
               '&.Mui-selected': {
                 backgroundColor: 'primary.lighter',
                 color: 'primary.main',
@@ -173,7 +187,12 @@ export default function Layout({ children }) {
               },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 40 }}>
+            <ListItemIcon 
+              sx={{ 
+                minWidth: minimized ? 'auto' : 40,
+                mr: minimized ? 0 : 2
+              }}
+            >
               <item.icon
                 size={20}
                 color={location.pathname === item.path ? 'currentColor' : undefined}
@@ -186,7 +205,12 @@ export default function Layout({ children }) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <List sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+      <List sx={{ 
+        p: minimized ? 1 : 2,
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: 0.5 
+      }}>
         {bottomMenuItems.map((item) => (
           <ListItemButton
             key={item.text}
@@ -194,6 +218,9 @@ export default function Layout({ children }) {
             selected={location.pathname === item.path}
             sx={{
               borderRadius: 2,
+              minHeight: 44,
+              justifyContent: minimized ? 'center' : 'flex-start',
+              px: minimized ? 1.5 : 2,
               '&.Mui-selected': {
                 backgroundColor: 'primary.lighter',
                 color: 'primary.main',
@@ -203,7 +230,12 @@ export default function Layout({ children }) {
               },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 40 }}>
+            <ListItemIcon 
+              sx={{ 
+                minWidth: minimized ? 'auto' : 40,
+                mr: minimized ? 0 : 2
+              }}
+            >
               <item.icon
                 size={20}
                 color={location.pathname === item.path ? 'currentColor' : undefined}
@@ -305,10 +337,30 @@ export default function Layout({ children }) {
               }}
               onClick={handleProfileMenuOpen}
             >
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>T</Avatar>
-              <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                Tom Cook
-              </Typography>
+              <Avatar 
+                src={user?.photoURL || undefined}
+                sx={{ 
+                  width: 32, 
+                  height: 32, 
+                  bgcolor: 'primary.main',
+                  '& img': {
+                    objectFit: 'cover'
+                  }
+                }}
+              >
+                {user?.displayName ? user.displayName[0].toUpperCase() : 'U'}
+              </Avatar>
+              <Box sx={{ 
+                display: { xs: 'none', sm: 'block' },
+                lineHeight: 1.2
+              }}>
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  {user?.displayName || 'User'}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'white' }}>
+                  {user?.email}
+                </Typography>
+              </Box>
               <ChevronDownIcon size={16} />
             </Box>
           </Box>

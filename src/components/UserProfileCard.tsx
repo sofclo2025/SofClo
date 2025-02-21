@@ -10,8 +10,14 @@ import {
   Avatar,
   Box,
   Button,
+  Divider,
+  Stack,
 } from '@mui/material';
-import { LogoutOutlined as LogoutIcon } from '@mui/icons-material';
+import { 
+  LogOut as LogoutIcon,
+  Mail as MailIcon,
+  User as UserIcon,
+} from 'lucide-react';
 
 export function UserProfileCard(): ReactElement | null {
   const navigate = useNavigate();
@@ -30,32 +36,75 @@ export function UserProfileCard(): ReactElement | null {
   if (!user) return null;
 
   return (
-    <Card sx={{ mb: 3 }}>
+    <Card sx={{ 
+      mb: 3,
+      boxShadow: 'none',
+      border: '1px solid',
+      borderColor: 'divider',
+      borderRadius: 2,
+    }}>
       <CardContent>
-        <Box display="flex" alignItems="center" mb={2}>
+        <Box display="flex" alignItems="center" mb={3}>
           <Avatar
             src={user.photoURL || undefined}
             alt={user.displayName || 'User'}
-            sx={{ width: 64, height: 64, mr: 2 }}
-          />
-          <Box>
-            <Typography variant="h6">
+            sx={{ 
+              width: 72, 
+              height: 72, 
+              bgcolor: 'primary.main',
+              fontSize: '1.5rem',
+              fontWeight: 600,
+            }}
+          >
+            {user.displayName ? user.displayName[0].toUpperCase() : <UserIcon />}
+          </Avatar>
+          <Box ml={2}>
+            <Typography variant="h6" fontWeight={600}>
               {user.displayName || 'User'}
             </Typography>
-            <Typography color="textSecondary" variant="body2">
+            <Typography color="text.secondary" variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <MailIcon size={16} />
               {user.email}
             </Typography>
           </Box>
         </Box>
-        <Button
-          variant="outlined"
-          color="error"
-          startIcon={<LogoutIcon />}
-          onClick={handleLogout}
-          fullWidth
-        >
-          Sign Out
-        </Button>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Stack spacing={2}>
+          <Button
+            variant="outlined"
+            color="inherit"
+            fullWidth
+            sx={{ 
+              borderRadius: 1,
+              justifyContent: 'flex-start',
+              px: 2,
+              py: 1,
+              color: 'text.primary',
+            }}
+            onClick={() => navigate('/profile')}
+          >
+            <UserIcon size={20} style={{ marginRight: '8px' }} />
+            Edit Profile
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<LogoutIcon />}
+            onClick={handleLogout}
+            fullWidth
+            sx={{ 
+              borderRadius: 1,
+              justifyContent: 'flex-start',
+              px: 2,
+              py: 1,
+            }}
+          >
+            Sign Out
+          </Button>
+        </Stack>
       </CardContent>
     </Card>
   );
