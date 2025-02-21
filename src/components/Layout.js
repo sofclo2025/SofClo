@@ -1,191 +1,444 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   Drawer,
+  AppBar,
+  Toolbar,
   List,
   Typography,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
+  IconButton,
+  useTheme,
+  InputBase,
   Avatar,
-  Button,
-  Chip,
+  Menu,
+  MenuItem,
+  Divider,
+  Tooltip,
+  Badge,
+  alpha,
 } from '@mui/material';
 import {
-  Dashboard as DashboardIcon,
-  Assignment as TasksIcon,
-  Inventory as InventoryIcon,
-  Security as ComplianceIcon,
-  AttachMoney as FinOpsIcon,
-  Settings as SettingsIcon,
-  Help as HelpIcon,
-} from '@mui/icons-material';
-import { auth } from '../config/firebase';
+  Menu as MenuIcon,
+  LayoutDashboard,
+  Wand2,
+  Target,
+  CalendarDays,
+  Users,
+  UserCircle,
+  FileBarChart,
+  AlertTriangle,
+  Sliders,
+  Link,
+  BarChart3,
+  Download,
+  Settings,
+  HelpCircle,
+  Search as SearchIcon,
+  ChevronLeft as ChevronLeftIcon,
+  LogOut as LogOutIcon,
+  Bell as BellIcon,
+  ChevronDown as ChevronDownIcon,
+} from 'lucide-react';
 
 const drawerWidth = 280;
+const minimizedDrawerWidth = 80;
+
+const mainMenuItems = [
+  { text: 'Overview', icon: LayoutDashboard, path: '/dashboard' },
+];
 
 const menuItems = [
-  { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-  { text: 'Tasks', icon: <TasksIcon />, path: '/tasks' },
-  { text: 'Inventory', icon: <InventoryIcon />, path: '/inventory' },
-  { text: 'Compliance', icon: <ComplianceIcon />, path: '/compliance' },
-  { text: 'FinOps', icon: <FinOpsIcon />, path: '/finops' },
+  { text: 'Wizard', icon: Wand2, path: '/dashboard/wizard' },
+  { text: 'Program Scope', icon: Target, path: '/dashboard/scope' },
+  { text: 'Planner', icon: CalendarDays, path: '/dashboard/planner' },
+  { text: 'Organization', icon: Users, path: '/dashboard/organization' },
+  { text: 'Stakeholders', icon: UserCircle, path: '/dashboard/stakeholders' },
+  { text: 'Reports', icon: FileBarChart, path: '/dashboard/reports' },
+  { text: 'Risk Assessment', icon: AlertTriangle, path: '/dashboard/risk' },
+  { text: 'Variables', icon: Sliders, path: '/dashboard/variables/form' },
+  { text: 'Connectors', icon: Link, path: '/dashboard/connectors' },
+  { text: 'Graphics', icon: BarChart3, path: '/dashboard/graphics' },
+  { text: 'Exports', icon: Download, path: '/dashboard/exports' },
 ];
 
 const bottomMenuItems = [
-  { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
-  { text: 'Help', icon: <HelpIcon />, path: '/help' },
+  { text: 'Settings', icon: Settings, path: '/settings' },
+  { text: 'Help', icon: HelpCircle, path: '/help' },
 ];
 
 export default function Layout({ children }) {
-  const navigate = useNavigate();
   const location = useLocation();
-  const user = auth.currentUser;
+  const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [minimized, setMinimized] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [notificationEl, setNotificationEl] = React.useState(null);
+  const [notifications] = React.useState([
+    { id: 1, text: 'New report available', time: '5m ago' },
+    { id: 2, text: 'Project milestone reached', time: '1h ago' },
+    { id: 3, text: 'Team meeting in 30 minutes', time: '2h ago' },
+  ]);
+  const theme = useTheme();
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    handleProfileMenuClose();
+    // Add your logout logic here
+    navigate('/login');
+  };
+
+  const handleMinimizeDrawer = () => {
+    setMinimized(!minimized);
+  };
+
+  const handleDrawerToggle = React.useCallback(() => {
+    setMobileOpen((prev) => !prev);
+  }, []);
 
   const drawer = (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* Logo and App Name */}
-      <Box sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Avatar sx={{ bgcolor: 'primary.main', width: 40, height: 40 }}>S</Avatar>
-        <Box>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>SofClo</Typography>
-          <Typography variant="caption" color="text.secondary">Software Asset Management</Typography>
-        </Box>
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      height: '100%',
+      pt: 2 
+    }}>
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: minimized ? 'center' : 'space-between', 
+        px: 2, 
+        mb: 2 
+      }}>
+        {!minimized && <Typography variant="h6" color="text.primary">SofClo</Typography>}
+        <IconButton onClick={handleMinimizeDrawer}>
+          <ChevronLeftIcon style={{ transform: minimized ? 'rotate(180deg)' : 'none' }} />
+        </IconButton>
       </Box>
-
-      {/* Main Navigation */}
-      <List sx={{ px: 2, py: 1, flex: 1 }}>
-        {menuItems.map((item) => {
-          const isSelected = location.pathname === item.path;
-          return (
-            <ListItem
-              button
-              key={item.text}
-              onClick={() => navigate(item.path)}
-              sx={{
-                borderRadius: 2,
-                mb: 1,
-                bgcolor: isSelected ? 'primary.light' : 'transparent',
-                color: isSelected ? 'primary.main' : 'text.primary',
-                '&:hover': {
-                  bgcolor: isSelected ? 'primary.light' : 'action.hover',
-                },
-              }}
-            >
-              <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText 
-                primary={item.text} 
-                primaryTypographyProps={{
-                  fontSize: '0.95rem',
-                  fontWeight: isSelected ? 600 : 400,
-                }}
-              />
-              {item.text === 'Tasks' && (
-                <Chip 
-                  label="5" 
-                  size="small" 
-                  color={isSelected ? "primary" : "default"}
-                  sx={{ ml: 1 }}
-                />
-              )}
-            </ListItem>
-          );
-        })}
-      </List>
-
-      {/* Bottom Navigation */}
-      <List sx={{ px: 2, py: 1 }}>
-        {bottomMenuItems.map((item) => (
-          <ListItem
-            button
+      <List sx={{ 
+        px: 2, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: 0.5 
+      }}>
+        {mainMenuItems.map((item) => (
+          <ListItemButton
             key={item.text}
             onClick={() => navigate(item.path)}
+            selected={location.pathname === item.path}
             sx={{
               borderRadius: 2,
-              mb: 1,
-              color: 'text.secondary',
-              '&:hover': {
-                bgcolor: 'action.hover',
+              '&.Mui-selected': {
+                backgroundColor: 'primary.lighter',
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.lighter',
+                },
               },
             }}
           >
-            <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
-              {item.icon}
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <item.icon
+                size={20}
+                color={location.pathname === item.path ? 'currentColor' : undefined}
+              />
             </ListItemIcon>
-            <ListItemText 
-              primary={item.text}
-              primaryTypographyProps={{
-                fontSize: '0.95rem',
-              }}
-            />
-          </ListItem>
+            {!minimized && <ListItemText primary={item.text} />}
+          </ListItemButton>
+        ))}
+
+        {menuItems.map((item) => (
+          <ListItemButton
+            key={item.text}
+            onClick={() => navigate(item.path)}
+            selected={location.pathname === item.path}
+            sx={{
+              borderRadius: 2,
+              '&.Mui-selected': {
+                backgroundColor: 'primary.lighter',
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.lighter',
+                },
+              },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <item.icon
+                size={20}
+                color={location.pathname === item.path ? 'currentColor' : undefined}
+              />
+            </ListItemIcon>
+            {!minimized && <ListItemText primary={item.text} />}
+          </ListItemButton>
         ))}
       </List>
 
-      {/* User Profile Section */}
-      <Box sx={{ p: 2, mt: 'auto' }}>
-        <Button
-          fullWidth
-          sx={{
-            justifyContent: 'flex-start',
-            px: 2,
-            py: 1.5,
-            bgcolor: 'background.default',
-            borderRadius: 2,
-            '&:hover': {
-              bgcolor: 'action.hover',
-            },
-          }}
-        >
-          <Avatar
-            src={user?.photoURL}
-            alt={user?.displayName || 'User'}
-            sx={{ width: 32, height: 32, mr: 1.5 }}
-          />
-          <Box sx={{ textAlign: 'left' }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-              {user?.displayName || 'User'}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {user?.email}
-            </Typography>
-          </Box>
-        </Button>
-      </Box>
+      <Box sx={{ flexGrow: 1 }} />
+
+      <List sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+        {bottomMenuItems.map((item) => (
+          <ListItemButton
+            key={item.text}
+            onClick={() => navigate(item.path)}
+            selected={location.pathname === item.path}
+            sx={{
+              borderRadius: 2,
+              '&.Mui-selected': {
+                backgroundColor: 'primary.lighter',
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.lighter',
+                },
+              },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <item.icon
+                size={20}
+                color={location.pathname === item.path ? 'currentColor' : undefined}
+              />
+            </ListItemIcon>
+            {!minimized && <ListItemText primary={item.text} />}
+          </ListItemButton>
+        ))}
+      </List>
     </Box>
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
-      <Drawer
-        variant="permanent"
+    <Box 
+      sx={{ 
+        display: 'grid',
+        gridTemplateColumns: {
+          xs: '1fr',
+          sm: `${minimized ? minimizedDrawerWidth : drawerWidth}px 1fr`
+        },
+        gridTemplateRows: 'auto 1fr',
+        minHeight: '100vh',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
+      <AppBar
+        position="fixed"
         sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-            border: 'none',
-            bgcolor: 'background.paper',
-            boxShadow: 1,
-          },
+          gridColumn: { xs: '1', sm: '2' },
+          width: { xs: '100%', sm: `calc(100% - ${minimized ? minimizedDrawerWidth : drawerWidth}px)` },
+          transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.easeInOut,
+            duration: theme.transitions.duration.standard,
+          }),
         }}
       >
-        {drawer}
-      </Drawer>
+        <Toolbar>
+          <IconButton
+            color="primary"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ 
+              mr: 2, 
+              display: { sm: 'none' },
+              '&:hover': {
+                backgroundColor: 'primary.lighter',
+              },
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          {/* Search Bar */}
+          <Box sx={{ 
+            position: 'relative',
+            ml: 3,
+            borderRadius: 1,
+            backgroundColor: (theme) => alpha(theme.palette.common.black, 0.05),
+            '&:hover': {
+              backgroundColor: (theme) => alpha(theme.palette.common.black, 0.1),
+            },
+            width: { xs: '100%', md: 'auto' },
+            maxWidth: '500px'
+          }}>
+            <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
+              <SearchIcon size={20} style={{ marginRight: '8px', color: theme.palette.text.secondary }} />
+              <InputBase
+                placeholder="Search..."
+                sx={{ width: '100%' }}
+              />
+            </Box>
+          </Box>
+
+          <Box sx={{ flexGrow: 1 }} />
+
+          {/* Right side icons */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            {/* Notifications */}
+            <Tooltip title="Notifications">
+              <IconButton
+                onClick={(e) => setNotificationEl(e.currentTarget)}
+                size="small"
+              >
+                <Badge color="error" variant="dot">
+                  <BellIcon size={20} />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+
+            {/* Profile */}
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 1, 
+                cursor: 'pointer',
+                '&:hover': { opacity: 0.8 } 
+              }}
+              onClick={handleProfileMenuOpen}
+            >
+              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>T</Avatar>
+              <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
+                Tom Cook
+              </Typography>
+              <ChevronDownIcon size={16} />
+            </Box>
+          </Box>
+
+          {/* Notifications Menu */}
+          <Menu
+            anchorEl={notificationEl}
+            open={Boolean(notificationEl)}
+            onClose={() => setNotificationEl(null)}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            PaperProps={{
+              sx: { width: 320, maxHeight: 400, overflow: 'auto' }
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ px: 2, py: 1.5, fontWeight: 600 }}>
+              Notifications
+            </Typography>
+            <Divider />
+            {notifications.map((notification) => (
+              <MenuItem key={notification.id} sx={{ py: 1.5 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                  <Typography variant="body2">{notification.text}</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {notification.time}
+                  </Typography>
+                </Box>
+              </MenuItem>
+            ))}
+          </Menu>
+
+          {/* Profile Menu */}
+          <Menu
+            anchorEl={anchorEl}
+            id="account-menu"
+            open={Boolean(anchorEl)}
+            onClose={handleProfileMenuClose}
+            onClick={handleProfileMenuClose}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          >
+            <MenuItem onClick={() => navigate('/profile')}>
+              <UserCircle size={16} style={{ marginRight: 8 }} />
+              Profile
+            </MenuItem>
+            <MenuItem onClick={() => navigate('/settings')}>
+              <Settings size={16} style={{ marginRight: 8 }} />
+              Settings
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogout}>
+              <LogOutIcon size={16} style={{ marginRight: 8 }} />
+              Logout
+            </MenuItem>
+          </Menu>
+        </Toolbar>
+      </AppBar>
+
+      <Box
+        component="nav"
+        sx={{
+          gridColumn: { xs: 'none', sm: '1' },
+          gridRow: { xs: 'none', sm: '1 / -1' },
+          position: { xs: 'fixed', sm: 'relative' },
+          zIndex: { xs: theme.zIndex.drawer, sm: 'auto' },
+          height: '100%',
+          transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.easeInOut,
+            duration: theme.transitions.duration.standard,
+          }),
+        }}
+      >
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              transition: theme.transitions.create('width', {
+                easing: theme.transitions.easing.easeInOut,
+                duration: theme.transitions.duration.standard,
+              }),
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+            width: minimized ? minimizedDrawerWidth : drawerWidth,
+            '& .MuiDrawer-paper': {
+              width: minimized ? minimizedDrawerWidth : drawerWidth,
+              overflowX: 'hidden',
+              transition: theme.transitions.create('width', {
+                easing: theme.transitions.easing.easeInOut,
+                duration: theme.transitions.duration.standard,
+              }),
+              borderRight: `1px solid ${theme.palette.divider}`,
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
-          p: 3,
-          bgcolor: '#F7F9FC',
+          gridColumn: { xs: '1', sm: '2' },
+          gridRow: '2',
+          width: '100%',
+          minHeight: 0,
           overflow: 'auto',
+          transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.easeInOut,
+            duration: theme.transitions.duration.standard,
+          }),
         }}
       >
-        {children}
+        <Toolbar /> {/* Spacer for fixed AppBar */}
+        <Box sx={{ p: 3 }}>
+          {children}
+        </Box>
       </Box>
     </Box>
   );
