@@ -5,14 +5,6 @@ export interface DashboardFormData {
     complianceRate: number;
     costOptimization: number;
   };
-  maturityScores: {
-    [key: string]: number;
-  };
-  complianceStatus: {
-    compliant: number;
-    nonCompliant: number;
-    atRisk: number;
-  };
   stakeholders: Array<{
     name: string;
     role: string;

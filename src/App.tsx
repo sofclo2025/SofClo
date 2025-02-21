@@ -1,102 +1,132 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import theme from './theme';
+import { Toaster } from 'sonner';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import DashboardForm from './pages/DashboardForm';
-import Tasks from './pages/Tasks';
-import Inventory from './pages/Inventory';
-import Compliance from './pages/Compliance';
-import FinOps from './pages/FinOps';
+import OrganizationSetup from './pages/OrganizationSetup';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
-import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
+import { useAuth } from './contexts/AuthContext';
+import theme from './theme';
 
-interface DashboardLayoutProps {
+interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-function DashboardLayout({ children }: DashboardLayoutProps) {
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Layout>{children}</Layout>
-    </ThemeProvider>
-  );
+function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { user } = useAuth();
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
 }
 
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/dashboard"
-            element={
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <Toaster position="top-right" richColors />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/organization-setup" element={<OrganizationSetup />} />
+            
+            {/* Protected Dashboard Routes */}
+            <Route path="/dashboard" element={
               <ProtectedRoute>
-                <DashboardLayout>
+                <Layout>
                   <Dashboard />
-                </DashboardLayout>
+                </Layout>
               </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/form"
-            element={
+            } />
+            <Route path="/dashboard/variables/form" element={
               <ProtectedRoute>
-                <DashboardLayout>
+                <Layout>
                   <DashboardForm />
-                </DashboardLayout>
+                </Layout>
               </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/tasks"
-            element={
+            } />
+            <Route path="/dashboard/wizard" element={
               <ProtectedRoute>
-                <DashboardLayout>
-                  <Tasks />
-                </DashboardLayout>
+                <Layout>
+                  <Dashboard />
+                </Layout>
               </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/inventory"
-            element={
+            } />
+            <Route path="/dashboard/scope" element={
               <ProtectedRoute>
-                <DashboardLayout>
-                  <Inventory />
-                </DashboardLayout>
+                <Layout>
+                  <Dashboard />
+                </Layout>
               </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/compliance"
-            element={
+            } />
+            <Route path="/dashboard/planner" element={
               <ProtectedRoute>
-                <DashboardLayout>
-                  <Compliance />
-                </DashboardLayout>
+                <Layout>
+                  <Dashboard />
+                </Layout>
               </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/finops"
-            element={
+            } />
+            <Route path="/dashboard/organization" element={
               <ProtectedRoute>
-                <DashboardLayout>
-                  <FinOps />
-                </DashboardLayout>
+                <Layout>
+                  <Dashboard />
+                </Layout>
               </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+            } />
+            <Route path="/dashboard/stakeholders" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/reports" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/risk" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/connectors" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/graphics" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/exports" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

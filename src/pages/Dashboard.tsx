@@ -1,187 +1,236 @@
-import React, { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Theme } from '@mui/material/styles';
 import {
   Box,
-  Grid,
   Card,
   CardContent,
   Typography,
-  Button,
   CircularProgress,
+  Grid,
+  Avatar,
+  AvatarGroup,
+  LinearProgress,
+  Divider,
   List,
   ListItem,
   ListItemText,
-  Chip,
+  ListItemAvatar,
+  useTheme,
 } from '@mui/material';
-import { toast } from 'sonner';
-import { getDashboardData } from '../utils/firebase';
-import type { DashboardFormData } from '../utils/types';
+import {
+  TrendingUp,
+  Users,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  Activity,
+} from 'lucide-react';
 
 export default function Dashboard() {
-  const [loading, setLoading] = useState(true);
-  const [dashboardData, setDashboardData] = useState<DashboardFormData | null>(null);
+  const theme = useTheme<Theme>();
+  const recentActivities = [
+    { id: 1, user: 'Alice', action: 'Updated Project Scope', time: '2 hours ago', type: 'update' },
+    { id: 2, user: 'Bob', action: 'Completed Risk Assessment', time: '4 hours ago', type: 'complete' },
+    { id: 3, user: 'Carol', action: 'Added New Milestone', time: '5 hours ago', type: 'create' },
+    { id: 4, user: 'David', action: 'Flagged Critical Issue', time: 'Yesterday', type: 'alert' },
+  ];
 
-  useEffect(() => {
-    async function loadDashboardData() {
-      try {
-        const data = await getDashboardData();
-        setDashboardData(data);
-      } catch (error) {
-        console.error('Error loading dashboard data:', error);
-        toast.error('Failed to load dashboard data');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadDashboardData();
-  }, []);
-
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (!dashboardData) {
-    return (
-      <Box p={3}>
-        <Typography variant="h5" gutterBottom>
-          No dashboard data found
-        </Typography>
-        <Button 
-          variant="contained" 
-          onClick={() => window.location.href = '/dashboard/form'}
-        >
-          Create Dashboard Data
-        </Button>
-      </Box>
-    );
-  }
+  const projectProgress = [
+    { name: 'Project Alpha', progress: 85 },
+    { name: 'Project Beta', progress: 65 },
+    { name: 'Project Gamma', progress: 45 },
+    { name: 'Project Delta', progress: 30 },
+  ];
 
   return (
-    <Box p={3}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4">Dashboard</Typography>
-        <Button 
-          variant="contained" 
-          onClick={() => window.location.href = '/dashboard/form'}
-        >
-          Update Dashboard Data
-        </Button>
-      </Box>
-
+    <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>
-        {/* Metrics */}
-        <Grid item xs={12}>
-          <Card>
+        {/* Key Metrics */}
+        <Grid item xs={12} md={6} lg={3}>
+          <Card sx={{ height: '100%' }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>Key Metrics</Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Typography color="textSecondary">Total Licenses</Typography>
-                  <Typography variant="h4">{dashboardData.metrics.totalLicenses}</Typography>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Typography color="textSecondary">Active Users</Typography>
-                  <Typography variant="h4">{dashboardData.metrics.activeUsers}</Typography>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Typography color="textSecondary">Compliance Rate</Typography>
-                  <Typography variant="h4">{dashboardData.metrics.complianceRate}%</Typography>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Typography color="textSecondary">Cost Optimization</Typography>
-                  <Typography variant="h4">${dashboardData.metrics.costOptimization}</Typography>
-                </Grid>
-              </Grid>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ 
+                  p: 1, 
+                  borderRadius: 1, 
+                  bgcolor: 'primary.lighter',
+                  display: 'flex',
+                  mr: 2
+                }}>
+                  <TrendingUp size={24} style={{ color: theme.palette.primary.main }} />
+                </Box>
+                <Typography variant="h6">Total Projects</Typography>
+              </Box>
+              <Typography variant="h3" color="primary.main" sx={{ mb: 1 }}>24</Typography>
+              <Typography variant="body2" color="success.main" sx={{ display: 'flex', alignItems: 'center' }}>
+                <TrendingUp size={16} style={{ marginRight: 4 }} />
+                +12% from last month
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Maturity Scores */}
+        <Grid item xs={12} md={6} lg={3}>
+          <Card sx={{ height: '100%' }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ 
+                  p: 1, 
+                  borderRadius: 1, 
+                  bgcolor: 'info.lighter',
+                  display: 'flex',
+                  mr: 2
+                }}>
+                  <Users size={24} style={{ color: theme.palette.info.main }} />
+                </Box>
+                <Typography variant="h6">Team Members</Typography>
+              </Box>
+              <Typography variant="h3" color="info.main" sx={{ mb: 1 }}>18</Typography>
+              <AvatarGroup max={5} sx={{ justifyContent: 'flex-start' }}>
+                <Avatar>A</Avatar>
+                <Avatar>B</Avatar>
+                <Avatar>C</Avatar>
+                <Avatar>D</Avatar>
+                <Avatar>E</Avatar>
+                <Avatar>F</Avatar>
+              </AvatarGroup>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={3}>
+          <Card sx={{ height: '100%' }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ 
+                  p: 1, 
+                  borderRadius: 1, 
+                  bgcolor: 'warning.lighter',
+                  display: 'flex',
+                  mr: 2
+                }}>
+                  <Clock size={24} style={{ color: theme.palette.warning.main }} />
+                </Box>
+                <Typography variant="h6">Pending Tasks</Typography>
+              </Box>
+              <Typography variant="h3" color="warning.main" sx={{ mb: 1 }}>45</Typography>
+              <Typography variant="body2" color="text.secondary">
+                Due within next 7 days
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={3}>
+          <Card sx={{ height: '100%' }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ 
+                  p: 1, 
+                  borderRadius: 1, 
+                  bgcolor: 'success.lighter',
+                  display: 'flex',
+                  mr: 2
+                }}>
+                  <Activity size={24} style={{ color: theme.palette.success.main }} />
+                </Box>
+                <Typography variant="h6">Completion Rate</Typography>
+              </Box>
+              <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                <CircularProgress
+                  variant="determinate"
+                  value={75}
+                  size={80}
+                  thickness={4}
+                  sx={{ color: 'success.main' }}
+                />
+                <Box sx={{
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  position: 'absolute',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  <Typography variant="h4" component="div" color="success.main">
+                    75%
+                  </Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Project Progress */}
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom>Maturity Assessment</Typography>
-              <List>
-                {Object.entries(dashboardData.maturityScores).map(([dimension, score]) => (
-                  <ListItem key={dimension}>
-                    <ListItemText 
-                      primary={dimension}
-                      secondary={`Score: ${score}/5`}
+              <Typography variant="h6" gutterBottom>Project Progress</Typography>
+              <Box sx={{ mt: 2 }}>
+                {projectProgress.map((project) => (
+                  <Box key={project.name} sx={{ mb: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                      <Typography variant="body2">{project.name}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {project.progress}%
+                      </Typography>
+                    </Box>
+                    <LinearProgress 
+                      variant="determinate" 
+                      value={project.progress}
+                      sx={{ 
+                        height: 8, 
+                        borderRadius: 1,
+                        bgcolor: 'background.neutral'
+                      }}
                     />
-                  </ListItem>
+                  </Box>
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Recent Activity */}
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>Recent Activity</Typography>
+              <List>
+                {recentActivities.map((activity) => (
+                  <React.Fragment key={activity.id}>
+                    <ListItem sx={{ px: 0 }}>
+                      <ListItemAvatar>
+                        <Avatar sx={{ 
+                          bgcolor: 
+                            activity.type === 'update' ? 'primary.lighter' :
+                            activity.type === 'complete' ? 'success.lighter' :
+                            activity.type === 'create' ? 'info.lighter' : 'warning.lighter'
+                        }}>
+                          {activity.type === 'update' ? <TrendingUp size={20} /> :
+                           activity.type === 'complete' ? <CheckCircle size={20} /> :
+                           activity.type === 'create' ? <Users size={20} /> :
+                           <AlertTriangle size={20} />}
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={activity.action}
+                        secondary={
+                          <React.Fragment>
+                            <Typography component="span" variant="body2" color="text.primary">
+                              {activity.user}
+                            </Typography>
+                            {` — ${activity.time}`}
+                          </React.Fragment>
+                        }
+                      />
+                    </ListItem>
+                    <Divider variant="inset" component="li" />
+                  </React.Fragment>
                 ))}
               </List>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Compliance Status */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>Compliance Status</Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={4}>
-                  <Typography color="success.main" variant="h4">
-                    {dashboardData.complianceStatus.compliant}
-                  </Typography>
-                  <Typography color="textSecondary">Compliant</Typography>
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography color="error.main" variant="h4">
-                    {dashboardData.complianceStatus.nonCompliant}
-                  </Typography>
-                  <Typography color="textSecondary">Non-Compliant</Typography>
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography color="warning.main" variant="h4">
-                    {dashboardData.complianceStatus.atRisk}
-                  </Typography>
-                  <Typography color="textSecondary">At Risk</Typography>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Stakeholders */}
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>Stakeholders</Typography>
-              <Grid container spacing={2}>
-                {dashboardData.stakeholders.map((stakeholder, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={index}>
-                    <Card variant="outlined">
-                      <CardContent>
-                        <Typography variant="h6">{stakeholder.name}</Typography>
-                        <Typography color="textSecondary" gutterBottom>{stakeholder.role}</Typography>
-                        <Box mt={1}>
-                          <Chip 
-                            label={stakeholder.status}
-                            color={stakeholder.status === 'active' ? 'success' : 'default'}
-                            size="small"
-                            sx={{ mr: 1 }}
-                          />
-                          <Chip 
-                            label={stakeholder.priority}
-                            color={
-                              stakeholder.priority === 'high' ? 'error' :
-                              stakeholder.priority === 'medium' ? 'warning' : 'info'
-                            }
-                            size="small"
-                          />
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
             </CardContent>
           </Card>
         </Grid>

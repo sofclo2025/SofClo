@@ -70,3 +70,16 @@ export async function getDashboardData(): Promise<DashboardFormData | null> {
     throw error;
   }
 }
+
+export async function saveDashboardData(data: DashboardFormData): Promise<void> {
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error('No user logged in');
+
+    const docRef = doc(db, 'dashboards', user.uid);
+    await setDoc(docRef, data);
+  } catch (error) {
+    console.error('Error saving dashboard data:', error);
+    throw error;
+  }
+}

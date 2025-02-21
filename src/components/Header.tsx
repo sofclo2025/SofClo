@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
@@ -32,18 +32,19 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const { organization, reset } = useProfileStore();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+  // Memoize handlers to prevent unnecessary re-renders
+  const handleMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await signOut(auth);
-      reset(); // Reset profile store
+      reset();
       navigate('/login');
       toast.success('Logged out successfully');
     } catch (error) {
@@ -51,15 +52,21 @@ export default function Header({ onMenuClick }: HeaderProps) {
       toast.error('Failed to logout');
     }
     handleClose();
-  };
+  }, [navigate, reset, handleClose]);
+
+  // Memoize menu items for better performance
+  const menuItems = [
+    { label: 'Profile', onClick: handleClose },
+    { label: 'Logout', onClick: handleLogout },
+  ];
 
   return (
     <AppBar 
       position="fixed" 
       sx={{ 
         zIndex: theme.zIndex.drawer + 1,
-        bgcolor: 'background.paper',
-        color: 'text.primary',
+        bgcolor: 'primary.main',
+        color: 'primary.contrastText',
         boxShadow: 'none',
         borderBottom: 1,
         borderColor: 'divider',
@@ -77,13 +84,25 @@ export default function Header({ onMenuClick }: HeaderProps) {
             <MenuIcon />
           </IconButton>
         )}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 600 }}>
+        
+        <Typography 
+          variant="h6" 
+          component="div" 
+          sx={{ 
+            flexGrow: 1, 
+            fontWeight: 600,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}
+        >
           {organization?.name || 'SAM Dashboard'}
         </Typography>
+
         <Box>
           <IconButton
             size="large"
-            aria-label="account of current user"
+            aria-label="account menu"
             aria-controls="menu-appbar"
             aria-haspopup="true"
             onClick={handleMenu}
@@ -101,23 +120,31 @@ export default function Header({ onMenuClick }: HeaderProps) {
               <AccountCircle />
             </Avatar>
           </IconButton>
+
           <Menu
             id="menu-appbar"
             anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'right',
             }}
-            keepMounted
             transformOrigin={{
               vertical: 'top',
               horizontal: 'right',
             }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
+            keepMounted
           >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            {menuItems.map((item) => (
+              <MenuItem 
+                key={item.label} 
+                onClick={item.onClick}
+                sx={{ minWidth: 120 }}
+              >
+                {item.label}
+              </MenuItem>
+            ))}
           </Menu>
         </Box>
       </Toolbar>
