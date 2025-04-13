@@ -150,7 +150,7 @@ const StakeholderManagement: React.FC = () => {
         addStakeholder(s.name, s.color);
       });
     }
-  }, [addStakeholder]);
+  }, [addStakeholder, stakeholders.length]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

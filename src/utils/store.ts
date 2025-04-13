@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { db } from '../config/firebase';
-import { collection, addDoc, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { Organization } from './types';
 
 interface ProfileStore {
@@ -10,6 +10,30 @@ interface ProfileStore {
   createOrganization: (orgData: Omit<Organization, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>, userId: string) => Promise<void>;
   getOrganization: (userId: string) => Promise<void>;
 }
+
+const addDocument = async (collectionName: string, data: any) => {
+  try {
+    const docRef = await addDoc(collection(db, collectionName), data);
+    return docRef.id;
+  } catch (error) {
+    console.error('Error adding document:', error);
+    throw error;
+  }
+};
+
+const getDocuments = async (collectionName: string, userId: string) => {
+  try {
+    const q = query(collection(db, collectionName), where('createdBy', '==', userId));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error('Error getting documents:', error);
+    throw error;
+  }
+};
 
 export const useProfileStore = create<ProfileStore>((set) => ({
   loading: false,
@@ -22,11 +46,9 @@ export const useProfileStore = create<ProfileStore>((set) => ({
       console.log("[Store] Creating organization for user:", userId);
       
       // Check if user already has an organization
-      const orgRef = collection(db, 'organizations');
-      const q = query(orgRef, where('createdBy', '==', userId));
-      const querySnapshot = await getDocs(q);
+      const existingOrgs = await getDocuments('organizations', userId);
       
-      if (!querySnapshot.empty) {
+      if (existingOrgs.length > 0) {
         throw new Error('User already has an organization');
       }
 
@@ -39,11 +61,11 @@ export const useProfileStore = create<ProfileStore>((set) => ({
       };
 
       console.log("[Store] Creating new organization:", newOrg);
-      const docRef = await addDoc(collection(db, 'organizations'), newOrg);
-      console.log("[Store] Organization created with ID:", docRef.id);
+      const docId = await addDocument('organizations', newOrg);
+      console.log("[Store] Organization created with ID:", docId);
       
       set({ 
-        organization: { ...newOrg, id: docRef.id },
+        organization: { ...newOrg, id: docId },
         loading: false 
       });
     } catch (error) {
@@ -64,26 +86,19 @@ export const useProfileStore = create<ProfileStore>((set) => ({
         throw new Error("Invalid user ID");
       }
 
-      console.log("[Store] Creating Firestore query for user:", userId);
-      const orgRef = collection(db, 'organizations');
-      const q = query(orgRef, where('createdBy', '==', userId));
+      const orgs = await getDocuments('organizations', userId);
       
-      console.log("[Store] Executing Firestore query...");
-      const querySnapshot = await getDocs(q);
-      console.log("[Store] Query complete. Documents found:", querySnapshot.size);
-      
-      if (querySnapshot.empty) {
+      if (orgs.length === 0) {
         console.log("[Store] No organization found for user:", userId);
         set({ organization: null, loading: false });
         throw new Error("No organization found");
       }
 
-      const orgDoc = querySnapshot.docs[0];
-      const orgData = orgDoc.data() as Omit<Organization, 'id'>;
-      console.log("[Store] Organization found:", { id: orgDoc.id, ...orgData });
+      const org = orgs[0];
+      console.log("[Store] Organization found:", org);
       
       set({ 
-        organization: { ...orgData, id: orgDoc.id },
+        organization: org,
         loading: false 
       });
     } catch (error) {
