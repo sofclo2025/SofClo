@@ -1,19 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Box,
   Container,
   Typography,
   Button,
   LinearProgress,
-  IconButton,
   TextField,
   MenuItem,
   Grid,
   Alert,
   Snackbar,
-  Paper,
 } from '@mui/material';
-import { motion } from 'framer-motion';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -39,17 +36,16 @@ const SamProgramScope: React.FC = () => {
   const { formData, setField, setCustomMode, resetForm } = useSamProgramStore();
   const { messages, enqueueSnackbar, removeSnackbar } = useSnackbarStore();
   const inputRefs = useRef<{ [key: string]: HTMLInputElement }>({});
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleToggleCustom = <T extends SectionKey>(
     section: T,
-    field: FieldKey<T>
+    fieldKey: FieldKey<T>
   ) => {
-    const fieldData = formData[section][field];
+    const fieldData = formData[section][fieldKey];
     if (isFormField(fieldData)) {
-      setCustomMode(section, field as keyof SamFormState[T] & string, !fieldData.isCustom);
+      setCustomMode(section, fieldKey as keyof SamFormState[T] & string, !fieldData.isCustom);
       setTimeout(() => {
-        inputRefs.current[`${String(section)}.${String(field)}`]?.focus();
+        inputRefs.current[`${String(section)}.${String(fieldKey)}`]?.focus();
       }, 0);
     }
   };
@@ -68,11 +64,10 @@ const SamProgramScope: React.FC = () => {
   };
 
   const validateForm = () => {
-    // Check if required fields are filled
     const requiredSections: (keyof SamFormState)[] = ['governance', 'itAssets', 'computingEnvironment'];
     for (const section of requiredSections) {
       const sectionData = formData[section];
-      for (const [field, value] of Object.entries(sectionData)) {
+      for (const [, value] of Object.entries(sectionData)) {
         if (isFormField(value) && !value.value) {
           return false;
         }
@@ -83,22 +78,15 @@ const SamProgramScope: React.FC = () => {
 
   const handleSubmit = () => {
     if (!validateForm()) {
-      setSubmitStatus('error');
       enqueueSnackbar('Please fill in all required fields', { variant: 'error' });
       return;
     }
 
-    // In a real application, you would send this to your backend
     console.log('Form submitted:', formData);
-    
-    // Show success message
-    setSubmitStatus('success');
     enqueueSnackbar('Form submitted successfully!', { variant: 'success' });
     
-    // Reset form after 2 seconds
     setTimeout(() => {
       resetForm();
-      setSubmitStatus('idle');
     }, 2000);
   };
 
@@ -108,10 +96,10 @@ const SamProgramScope: React.FC = () => {
 
   const renderFormField = <T extends SectionKey>(
     section: T,
-    field: FieldKey<T>,
+    fieldKey: FieldKey<T>,
     label: string
   ) => {
-    const fieldData = formData[section][field];
+    const fieldData = formData[section][fieldKey];
     
     if (typeof fieldData === 'number') {
       return (
@@ -141,10 +129,10 @@ const SamProgramScope: React.FC = () => {
             <TextField
               fullWidth
               value={fieldData.value}
-              onChange={(e) => setField(section, field, { ...fieldData, value: e.target.value })}
+              onChange={(e) => setField(section, fieldKey, { ...fieldData, value: e.target.value })}
               inputRef={(el) => {
                 if (el) {
-                  inputRefs.current[`${String(section)}.${String(field)}`] = el;
+                  inputRefs.current[`${String(section)}.${String(fieldKey)}`] = el;
                 }
               }}
               size="small"
@@ -154,7 +142,7 @@ const SamProgramScope: React.FC = () => {
               select
               fullWidth
               value={fieldData.value}
-              onChange={(e) => setField(section, field, { ...fieldData, value: e.target.value })}
+              onChange={(e) => setField(section, fieldKey, { ...fieldData, value: e.target.value })}
               size="small"
             >
               {fieldData.options?.map((option: string) => (
@@ -166,7 +154,7 @@ const SamProgramScope: React.FC = () => {
           )}
           <Button
             size="small"
-            onClick={() => handleToggleCustom(section, field)}
+            onClick={() => handleToggleCustom(section, fieldKey)}
             sx={{ mt: 1 }}
           >
             {fieldData.isCustom ? 'Use Dropdown' : 'Custom Input'}
@@ -191,12 +179,6 @@ const SamProgramScope: React.FC = () => {
     });
 
     return totalFields ? (filledFields / totalFields) * 100 : 0;
-  };
-
-  const calculateTotalProgress = (): number => {
-    const sections = Object.keys(formData) as SectionKey[];
-    const sectionProgress = sections.map(calculateSectionProgress);
-    return sectionProgress.reduce((acc, curr) => acc + curr, 0) / sections.length;
   };
 
   return (
