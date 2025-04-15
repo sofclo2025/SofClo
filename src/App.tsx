@@ -14,6 +14,7 @@ const OrganizationSetup = lazy(() => import('./pages/OrganizationSetup'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const DashboardForm = lazy(() => import('./pages/DashboardForm'));
 const StakeholderManagement = lazy(() => import('./pages/StakeholderManagement'));
+const SamProgramScope = lazy(() => import('./pages/SamProgramScope'));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -56,7 +57,7 @@ const routes = [
   },
   {
     path: '/dashboard/scope',
-    element: <Dashboard />,
+    element: <SamProgramScope />,
     protected: true
   },
   {
