@@ -67,7 +67,7 @@ const SamProgramScope: React.FC = () => {
     const requiredSections: (keyof SamFormState)[] = ['governance', 'itAssets', 'computingEnvironment'];
     for (const section of requiredSections) {
       const sectionData = formData[section];
-      for (const [, value] of Object.entries(sectionData)) {
+      for (const value of Object.values(sectionData)) {
         if (isFormField(value) && !value.value) {
           return false;
         }
