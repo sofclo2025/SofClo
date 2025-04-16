@@ -15,6 +15,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const DashboardForm = lazy(() => import('./pages/DashboardForm'));
 const StakeholderManagement = lazy(() => import('./pages/StakeholderManagement'));
 const SamProgramScope = lazy(() => import('./pages/SamProgramScope'));
+const PlannerDashboard = lazy(() => import('./pages/dashboard/planner'));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -51,8 +52,13 @@ const routes = [
     protected: true
   },
   {
-    path: '/dashboard/wizard',
-    element: <Dashboard />,
+    path: '/dashboard/stakeholders',
+    element: <StakeholderManagement />,
+    protected: true
+  },
+  {
+    path: '/dashboard/sam-program-scope',
+    element: <SamProgramScope />,
     protected: true
   },
   {
@@ -62,42 +68,7 @@ const routes = [
   },
   {
     path: '/dashboard/planner',
-    element: <Dashboard />,
-    protected: true
-  },
-  {
-    path: '/dashboard/organization',
-    element: <Dashboard />,
-    protected: true
-  },
-  {
-    path: '/dashboard/stakeholders',
-    element: <StakeholderManagement />,
-    protected: true
-  },
-  {
-    path: '/dashboard/reports',
-    element: <Dashboard />,
-    protected: true
-  },
-  {
-    path: '/dashboard/risk',
-    element: <Dashboard />,
-    protected: true
-  },
-  {
-    path: '/dashboard/connectors',
-    element: <Dashboard />,
-    protected: true
-  },
-  {
-    path: '/dashboard/graphics',
-    element: <Dashboard />,
-    protected: true
-  },
-  {
-    path: '/dashboard/exports',
-    element: <Dashboard />,
+    element: <PlannerDashboard />,
     protected: true
   }
 ];
