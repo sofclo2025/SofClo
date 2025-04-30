@@ -37,6 +37,7 @@ import {
   Download,
   Settings,
   HelpCircle,
+  Settings2 as OperatingModelIcon,
   Search as SearchIcon,
   ChevronLeft as ChevronLeftIcon,
   LogOut as LogOutIcon,
@@ -54,7 +55,8 @@ const mainMenuItems = [
 
 const menuItems = [
   { text: 'Wizard', icon: Wand2, path: '/dashboard/wizard' },
-  { text: 'Program Scope', icon: Target, path: '/dashboard/scope' },
+  { text: 'Program Scope', icon: Target, path: '/dashboard/samprogramscope' },
+  { text: 'Operating Model', icon: OperatingModelIcon, path: '/dashboard/operating-model' },
   { text: 'Planner', icon: CalendarDays, path: '/dashboard/planner' },
   { text: 'Organization', icon: Users, path: '/dashboard/organization' },
   { text: 'Stakeholders', icon: UserCircle, path: '/dashboard/stakeholders' },

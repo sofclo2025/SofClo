@@ -3,19 +3,21 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider } from '@mui/material/styles';
 import { CircularProgress, Box } from '@mui/material';
 import { AuthProvider } from './contexts/AuthContext';
+import { DashboardProvider } from './contexts/DashboardContext';
 import theme from './theme';
 import ProtectedRoute from './components/ProtectedRoute';
-import Layout from './components/Layout';
+import Layout from './components/Layout.js';
 
 // Lazy load components
 const Login = lazy(() => import('./pages/Login'));
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const OrganizationSetup = lazy(() => import('./pages/OrganizationSetup'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
 const DashboardForm = lazy(() => import('./pages/DashboardForm'));
 const StakeholderManagement = lazy(() => import('./pages/StakeholderManagement'));
 const SamProgramScope = lazy(() => import('./pages/SamProgramScope'));
 const PlannerDashboard = lazy(() => import('./pages/dashboard/planner'));
+const OverviewDashboard = lazy(() => import('./pages/dashboard/Overview'));
+const OperatingModel = lazy(() => import('./pages/OperatingModel'));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -43,7 +45,17 @@ const routes = [
   },
   {
     path: '/dashboard',
-    element: <Dashboard />,
+    element: <OverviewDashboard />,
+    protected: true
+  },
+  {
+    path: '/dashboard/overview',
+    element: <OverviewDashboard />,
+    protected: true
+  },
+  {
+    path: '/dashboard/operating-model',
+    element: <OperatingModel />,
     protected: true
   },
   {
@@ -57,12 +69,7 @@ const routes = [
     protected: true
   },
   {
-    path: '/dashboard/sam-program-scope',
-    element: <SamProgramScope />,
-    protected: true
-  },
-  {
-    path: '/dashboard/scope',
+    path: '/dashboard/samprogramscope',
     element: <SamProgramScope />,
     protected: true
   },
@@ -76,33 +83,35 @@ const routes = [
 function App() {
   return (
     <AuthProvider>
-      <ThemeProvider theme={theme}>
-        <Router>
-          <Suspense fallback={<LoadingFallback />}>
-            <Routes>
-              {/* Map routes configuration */}
-              {routes.map(({ path, element, public: isPublic, protected: isProtected }) => (
-                <Route
-                  key={path}
-                  path={path}
-                  element={
-                    isProtected ? (
-                      <ProtectedRoute>
-                        <Layout>{element}</Layout>
-                      </ProtectedRoute>
-                    ) : (
-                      element
-                    )
-                  }
-                />
-              ))}
+      <DashboardProvider>
+        <ThemeProvider theme={theme}>
+          <Router>
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                {/* Map routes configuration */}
+                {routes.map(({ path, element, public: isPublic, protected: isProtected }) => (
+                  <Route
+                    key={path}
+                    path={path}
+                    element={
+                      isProtected ? (
+                        <ProtectedRoute>
+                          <Layout>{element}</Layout>
+                        </ProtectedRoute>
+                      ) : (
+                        element
+                      )
+                    }
+                  />
+                ))}
 
-              {/* Catch all route for 404 */}
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </Suspense>
-        </Router>
-      </ThemeProvider>
+                {/* Catch all route for 404 */}
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              </Routes>
+            </Suspense>
+          </Router>
+        </ThemeProvider>
+      </DashboardProvider>
     </AuthProvider>
   );
 }
