@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText, useTheme, styled } from '@mui/material';
+import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText, styled } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const DRAWER_WIDTH = 240;
@@ -41,7 +41,6 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
-  const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
