@@ -23,6 +23,12 @@ const frameworkSections: FrameworkSection[] = [
       'Scope Definition',
       'Inclusion/Exclusions',
       'Coverage Targets',
+      'Program Goals and Objectives',
+      'Resource Requirements',
+      'Timeline and Milestones',
+      'Budget Allocation',
+      'Risk Assessment Framework',
+      'Stakeholder Analysis'
     ],
     color: 'blue',
     path: '/dashboard/program-scope'
@@ -32,13 +38,17 @@ const frameworkSections: FrameworkSection[] = [
     icon: <OperatingModelIcon size={24} />,
     description: 'Core structure and approach for managing software assets',
     items: [
-      'SAM Organization',
-      'SAM Services',
+      'SAM Organization Structure',
+      'SAM Services Catalog',
       'Software Tiering & Prioritization',
       'Tier Criteria Definition',
       'Tier 1/2/3 Vendor Lists',
       'Tier Impact Model',
-      'SAM Plan',
+      'SAM Plan & Strategy',
+      'Process Documentation',
+      'Service Level Agreements',
+      'Performance Metrics',
+      'Continuous Improvement Plan'
     ],
     color: 'green',
     path: '/operating-model'
@@ -49,11 +59,16 @@ const frameworkSections: FrameworkSection[] = [
     description: 'Managing relationships and risk with software providers',
     items: [
       'List of Software Vendors',
-      'Annual Wheel',
+      'Annual Wheel Planning',
       'Vendor Risk Register',
       'ELP Project Calendar',
-      'Annual Spend vs. Risk Score',
+      'Annual Spend Analysis',
+      'Risk Score Assessment',
       'Rolling Schedule for ELPs',
+      'Contract Management',
+      'Vendor Performance Metrics',
+      'Cost Optimization Strategy',
+      'Compliance Tracking'
     ],
     color: 'purple',
     path: '/vendors'
@@ -65,8 +80,15 @@ const frameworkSections: FrameworkSection[] = [
     items: [
       'SAM Team Roles',
       'RACI Matrix',
-      'SAM-Advisory or Steering Board',
+      'SAM-Advisory Board',
+      'Steering Committee',
       'Communication Plan',
+      'Decision Making Framework',
+      'Escalation Procedures',
+      'Training Program',
+      'Skills Matrix',
+      'Succession Planning',
+      'Change Management Process'
     ],
     color: 'orange',
     path: '/roles'
@@ -75,7 +97,19 @@ const frameworkSections: FrameworkSection[] = [
     title: 'Strategic Objectives & Maturity Goals',
     icon: <Target size={24} />,
     description: 'Setting direction and measuring progress',
-    items: ['SAM "North Star" Vision', 'Business Objectives', 'Maturity Assessment'],
+    items: [
+      'SAM "North Star" Vision',
+      'Business Objectives',
+      'Maturity Assessment',
+      'KPI Framework',
+      'ROI Measurement',
+      'Strategic Roadmap',
+      'Growth Targets',
+      'Innovation Goals',
+      'Digital Transformation Alignment',
+      'Sustainability Objectives',
+      'Value Creation Metrics'
+    ],
     color: 'red',
     path: '/objectives'
   },
@@ -87,7 +121,14 @@ const frameworkSections: FrameworkSection[] = [
       'Primary SAM Tool',
       'Data Sources Integration',
       'Discovery & Deployment Plans',
-      'Data Validation & Quality Plan',
+      'Data Validation & Quality',
+      'Automation Strategy',
+      'Tool Integration Map',
+      'Data Governance Framework',
+      'Security Controls',
+      'Backup Procedures',
+      'Reporting Dashboard',
+      'Analytics Capabilities'
     ],
     color: 'indigo',
     path: '/tooling'
@@ -144,19 +185,19 @@ const Overview = () => {
       
       <div className="px-4 pb-12">
         {/* Hero Section */}
-        <header className="max-w-5xl mx-auto text-center py-8">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-indigo-600">
+        <header className="max-w-5xl mx-auto text-center pt-2 pb-6 -mt-4 relative z-10 bg-white">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#00ADEF] to-[#007BBF] leading-tight">
             SAM Framework & Operating Model
           </h1>
         </header>
         
-        <main className="max-w-7xl mx-auto">
+        <main className="max-w-7xl mx-auto relative z-0">
           {/* Summary Stats */}
           <SummaryStats />
           
           {/* Framework Components */}
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Framework Components</h2>
+            <h2 className="text-2xl font-bold text-[#003A5D] mb-6">Framework Components</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {frameworkSections.map((section) => (
                 <FrameworkCard 
@@ -169,8 +210,8 @@ const Overview = () => {
           </div>
           
           {/* Quarterly Plan Section */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">SAM Annual Plan</h2>
+          <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300">
+            <h2 className="text-2xl font-bold text-[#003A5D] mb-6">SAM Annual Plan</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {quarters.map((quarter, index) => (
                 <QuarterCard key={quarter.title} quarter={quarter} index={index} />

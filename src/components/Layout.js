@@ -21,6 +21,7 @@ import {
   Badge,
   alpha,
 } from '@mui/material';
+import logoImage from '../assets/images/image.png';
 import {
   Menu as MenuIcon,
   LayoutDashboard,
@@ -40,6 +41,7 @@ import {
   Settings2 as OperatingModelIcon,
   Search as SearchIcon,
   ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
   LogOut as LogOutIcon,
   Bell as BellIcon,
   ChevronDown as ChevronDownIcon,
@@ -121,49 +123,79 @@ export default function Layout({ children }) {
       <Box sx={{ 
         display: 'flex', 
         alignItems: 'center', 
-        justifyContent: minimized ? 'center' : 'space-between', 
-        px: 2, 
-        mb: 2 
+        justifyContent: minimized ? 'center' : 'flex-start', 
+        px: minimized ? 1 : 3,
+        py: 2,
+        mb: 1,
+        position: 'relative',
+        overflow: 'hidden',
+        backgroundColor: '#FFFFFF',
+        minHeight: minimized ? 80 : 140,
+        borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
       }}>
-        {!minimized && <Typography variant="h6" color="text.primary">SofClo</Typography>}
-        <IconButton onClick={handleMinimizeDrawer}>
-          <ChevronLeftIcon style={{ transform: minimized ? 'rotate(180deg)' : 'none' }} />
-        </IconButton>
+        <Box
+          component="img"
+          src={logoImage}
+          alt="SofClo"
+          sx={{
+            width: minimized ? 60 : 250,
+            height: minimized ? 60 : 150,
+            display: 'block',
+            transition: 'all 0.3s ease-in-out',
+            '&:hover': {
+              transform: `scale(${minimized ? 1.08 : 1.05}) translateY(-${minimized ? 1 : 2}px)`,
+              filter: 'drop-shadow(0px 6px 12px rgba(32, 156, 238, 0.2))'
+            },
+            filter: 'drop-shadow(0px 4px 8px rgba(32, 156, 238, 0.15))',
+            objectFit: 'contain',
+            cursor: 'pointer'
+          }}
+        />
       </Box>
       <List sx={{ 
         px: minimized ? 1 : 2,
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: 0.5 
+        py: 2,
+        flex: 1,
+        '& .MuiListItemButton-root': {
+          borderRadius: '12px',
+          mb: 1,
+          px: 2,
+          py: 1,
+          color: '#1B2559',
+          '&.Mui-selected': {
+            backgroundColor: '#F4F7FE',
+            color: '#1B2559',
+            '&:hover': {
+              backgroundColor: '#F4F7FE',
+            },
+            '& .MuiListItemIcon-root': {
+              color: '#1B2559',
+            }
+          },
+          '&:hover': {
+            backgroundColor: alpha('#F4F7FE', 0.8),
+          },
+          '& .MuiListItemIcon-root': {
+            minWidth: minimized ? 'auto' : 40,
+            color: '#1B2559',
+          }
+        }
       }}>
         {mainMenuItems.map((item) => (
           <ListItemButton
             key={item.text}
             onClick={() => navigate(item.path)}
             selected={location.pathname === item.path}
-            sx={{
-              borderRadius: 2,
-              minHeight: 44,
-              justifyContent: minimized ? 'center' : 'flex-start',
-              px: minimized ? 1.5 : 2,
-              '&.Mui-selected': {
-                backgroundColor: 'primary.lighter',
-                color: 'primary.main',
-                '&:hover': {
-                  backgroundColor: 'primary.lighter',
-                },
-              },
-            }}
           >
             <ListItemIcon 
               sx={{ 
                 minWidth: minimized ? 'auto' : 40,
-                mr: minimized ? 0 : 2
+                mr: minimized ? 0 : 2,
               }}
             >
               <item.icon
                 size={20}
-                color={location.pathname === item.path ? 'currentColor' : undefined}
+                color={location.pathname === item.path ? '#1B2559' : undefined}
               />
             </ListItemIcon>
             {!minimized && <ListItemText primary={item.text} />}
@@ -175,29 +207,16 @@ export default function Layout({ children }) {
             key={item.text}
             onClick={() => navigate(item.path)}
             selected={location.pathname === item.path}
-            sx={{
-              borderRadius: 2,
-              minHeight: 44,
-              justifyContent: minimized ? 'center' : 'flex-start',
-              px: minimized ? 1.5 : 2,
-              '&.Mui-selected': {
-                backgroundColor: 'primary.lighter',
-                color: 'primary.main',
-                '&:hover': {
-                  backgroundColor: 'primary.lighter',
-                },
-              },
-            }}
           >
             <ListItemIcon 
               sx={{ 
                 minWidth: minimized ? 'auto' : 40,
-                mr: minimized ? 0 : 2
+                mr: minimized ? 0 : 2,
               }}
             >
               <item.icon
                 size={20}
-                color={location.pathname === item.path ? 'currentColor' : undefined}
+                color={location.pathname === item.path ? '#1B2559' : undefined}
               />
             </ListItemIcon>
             {!minimized && <ListItemText primary={item.text} />}
@@ -218,19 +237,6 @@ export default function Layout({ children }) {
             key={item.text}
             onClick={() => navigate(item.path)}
             selected={location.pathname === item.path}
-            sx={{
-              borderRadius: 2,
-              minHeight: 44,
-              justifyContent: minimized ? 'center' : 'flex-start',
-              px: minimized ? 1.5 : 2,
-              '&.Mui-selected': {
-                backgroundColor: 'primary.lighter',
-                color: 'primary.main',
-                '&:hover': {
-                  backgroundColor: 'primary.lighter',
-                },
-              },
-            }}
           >
             <ListItemIcon 
               sx={{ 
@@ -240,7 +246,7 @@ export default function Layout({ children }) {
             >
               <item.icon
                 size={20}
-                color={location.pathname === item.path ? 'currentColor' : undefined}
+                color={location.pathname === item.path ? '#1B2559' : undefined}
               />
             </ListItemIcon>
             {!minimized && <ListItemText primary={item.text} />}
@@ -273,11 +279,14 @@ export default function Layout({ children }) {
             easing: theme.transitions.easing.easeInOut,
             duration: theme.transitions.duration.standard,
           }),
+          backgroundColor: '#00ADEF',
+          boxShadow: '0 2px 4px rgba(0, 123, 191, 0.15)',
+          backgroundImage: 'linear-gradient(to right, #00ADEF, #007BBF)',
         }}
       >
         <Toolbar>
           <IconButton
-            color="primary"
+            color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
@@ -285,7 +294,7 @@ export default function Layout({ children }) {
               mr: 2, 
               display: { sm: 'none' },
               '&:hover': {
-                backgroundColor: 'primary.lighter',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
               },
             }}
           >
@@ -294,22 +303,49 @@ export default function Layout({ children }) {
           {/* Search Bar */}
           <Box sx={{ 
             position: 'relative',
-            ml: 3,
-            borderRadius: 1,
-            backgroundColor: (theme) => alpha(theme.palette.common.black, 0.05),
+            backgroundColor: '#FFFFFF',
+            borderRadius: 2,
+            marginRight: 2,
+            width: { xs: '100%', sm: 'auto' },
+            flex: { xs: 1, sm: 0.4 },
+            border: '1px solid',
+            borderColor: 'rgba(0, 0, 0, 0.12)',
             '&:hover': {
-              backgroundColor: (theme) => alpha(theme.palette.common.black, 0.1),
+              backgroundColor: '#F4F7FE',
+              boxShadow: '0 2px 4px rgba(0, 122, 191, 0.1)',
             },
-            width: { xs: '100%', md: 'auto' },
-            maxWidth: '500px'
           }}>
-            <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
-              <SearchIcon size={20} style={{ marginRight: '8px', color: theme.palette.text.secondary }} />
-              <InputBase
-                placeholder="Search..."
-                sx={{ width: '100%' }}
-              />
+            <Box sx={{ 
+              padding: '8px 12px', 
+              height: '100%', 
+              position: 'absolute', 
+              pointerEvents: 'none', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              color: '#003A5D',
+            }}>
+              <SearchIcon size={20} />
             </Box>
+            <InputBase
+              placeholder="Search..."
+              sx={{
+                color: '#003A5D',
+                width: '100%',
+                '& .MuiInputBase-input': {
+                  padding: '10px 10px 10px 40px',
+                  fontSize: '0.875rem',
+                  '&::placeholder': {
+                    color: alpha('#003A5D', 0.7),
+                    opacity: 1,
+                  },
+                  '&:focus': {
+                    backgroundColor: '#F4F7FE',
+                    boxShadow: '0 0 0 2px #00ADEF',
+                  },
+                },
+              }}
+            />
           </Box>
 
           <Box sx={{ flexGrow: 1 }} />
@@ -435,6 +471,31 @@ export default function Layout({ children }) {
           }),
         }}
       >
+        <IconButton
+          onClick={handleMinimizeDrawer}
+          sx={{
+            position: 'absolute',
+            right: -20,
+            top: 72,
+            width: 20,
+            height: 40,
+            borderRadius: '0 4px 4px 0',
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.secondary,
+            boxShadow: '4px 0 8px rgba(0, 0, 0, 0.1)',
+            zIndex: theme.zIndex.drawer + 1,
+            '&:hover': {
+              backgroundColor: theme.palette.action.hover,
+            },
+            display: { xs: 'none', sm: 'flex' },
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 0,
+          }}
+        >
+          {minimized ? <ChevronRightIcon size={18} /> : <ChevronLeftIcon size={18} />}
+        </IconButton>
+
         <Drawer
           variant="temporary"
           open={mobileOpen}
@@ -458,15 +519,16 @@ export default function Layout({ children }) {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            width: minimized ? minimizedDrawerWidth : drawerWidth,
             '& .MuiDrawer-paper': {
               width: minimized ? minimizedDrawerWidth : drawerWidth,
-              overflowX: 'hidden',
               transition: theme.transitions.create('width', {
                 easing: theme.transitions.easing.easeInOut,
                 duration: theme.transitions.duration.standard,
               }),
-              borderRight: `1px solid ${theme.palette.divider}`,
+              overflowX: 'hidden',
+              borderRight: '1px solid rgba(0, 0, 0, 0.12)',
+              backgroundColor: '#FFFFFF',
+              color: '#1B2559',
             },
           }}
           open
