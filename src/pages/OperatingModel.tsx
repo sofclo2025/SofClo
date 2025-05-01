@@ -226,11 +226,9 @@ const OverviewPage: React.FC = () => {
   const [isPublishClicked, setIsPublishClicked] = useState(false);
   const [orgLabels, setOrgLabels] = useState<string[]>([]);
   const [commLabels, setCommLabels] = useState<string[]>([]);
-  const [stakeholderCount, setStakeholderCount] = useState(0);
-  const [teamCount, setTeamCount] = useState(5);
-  const [memberRoles, setMemberRoles] = useState<string[]>(initialRoles);
-  const [memberNames, setMemberNames] = useState<string[]>(fakeNames.slice(0, 5));
   const [selectedStakeholders, setSelectedStakeholders] = useState<string[]>(sampleData.selectedStakeholders);
+  const [memberRoles, setMemberRoles] = useState<string[]>(sampleData.teamMembers.map(tm => tm.role));
+  const [memberNames, setMemberNames] = useState<string[]>(sampleData.teamMembers.map(tm => tm.name));
 
   // Global dropdown state
   const [selectedOrgLayer, setSelectedOrgLayer] = useState(orgLayers[0]);

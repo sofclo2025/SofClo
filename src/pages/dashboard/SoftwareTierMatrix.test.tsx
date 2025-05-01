@@ -2,16 +2,25 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import SoftwareTierMatrix from "./SoftwareTierMatrix";
+import { BrowserRouter } from "react-router-dom";
 
 describe("SoftwareTierMatrix", () => {
   it("renders Tier & Category selectors", () => {
-    render(<SoftwareTierMatrix />);
+    render(
+      <BrowserRouter>
+        <SoftwareTierMatrix />
+      </BrowserRouter>
+    );
     expect(screen.getByLabelText(/Tiers/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Categories/i)).toBeInTheDocument();
   });
 
   it("adds a new vendor", () => {
-    render(<SoftwareTierMatrix />);
+    render(
+      <BrowserRouter>
+        <SoftwareTierMatrix />
+      </BrowserRouter>
+    );
     const input = screen.getByPlaceholderText("New Vendor");
     const btn = screen.getByRole("button", { name: /Add Vendor/i });
     fireEvent.change(input, { target: { value: "Vendor X" } });
