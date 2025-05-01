@@ -13,11 +13,12 @@ const Login = lazy(() => import('./pages/Login'));
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const OrganizationSetup = lazy(() => import('./pages/OrganizationSetup'));
 const DashboardForm = lazy(() => import('./pages/DashboardForm'));
-const StakeholderManagement = lazy(() => import('./pages/StakeholderManagement'));
 const SamProgramScope = lazy(() => import('./pages/SamProgramScope'));
 const PlannerDashboard = lazy(() => import('./pages/dashboard/planner'));
 const OverviewDashboard = lazy(() => import('./pages/dashboard/Overview'));
+const OperatingModelLanding = lazy(() => import('./pages/dashboard/OperatingModelLanding'));
 const OperatingModel = lazy(() => import('./pages/OperatingModel'));
+const SoftwareTierMatrix = lazy(() => import('./pages/dashboard/SoftwareTierMatrix'));
 const ToolingDiagram = lazy(() => import('./pages/dashboard/ToolingDiagram'));
 
 // Loading fallback component
@@ -50,28 +51,28 @@ const routes = [
     protected: true
   },
   {
-    path: '/dashboard/overview',
-    element: <OverviewDashboard />,
-    protected: true
-  },
-  {
-    path: '/dashboard/operating-model',
-    element: <OperatingModel />,
-    protected: true
-  },
-  {
-    path: '/dashboard/variables/form',
+    path: '/dashboard/wizard',
     element: <DashboardForm />,
-    protected: true
-  },
-  {
-    path: '/dashboard/stakeholders',
-    element: <StakeholderManagement />,
     protected: true
   },
   {
     path: '/dashboard/samprogramscope',
     element: <SamProgramScope />,
+    protected: true
+  },
+  {
+    path: '/dashboard/operating-model',
+    element: <OperatingModelLanding />,
+    protected: true
+  },
+  {
+    path: '/dashboard/operating-model/team',
+    element: <OperatingModel />,
+    protected: true
+  },
+  {
+    path: '/dashboard/operating-model/tier-matrix',
+    element: <SoftwareTierMatrix />,
     protected: true
   },
   {
