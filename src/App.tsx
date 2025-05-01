@@ -18,6 +18,7 @@ const SamProgramScope = lazy(() => import('./pages/SamProgramScope'));
 const PlannerDashboard = lazy(() => import('./pages/dashboard/planner'));
 const OverviewDashboard = lazy(() => import('./pages/dashboard/Overview'));
 const OperatingModel = lazy(() => import('./pages/OperatingModel'));
+const ToolingDiagram = lazy(() => import('./pages/dashboard/ToolingDiagram'));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -76,6 +77,11 @@ const routes = [
   {
     path: '/dashboard/planner',
     element: <PlannerDashboard />,
+    protected: true
+  },
+  {
+    path: '/dashboard/tooling-diagram',
+    element: <ToolingDiagram />,
     protected: true
   }
 ];

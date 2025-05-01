@@ -23,7 +23,6 @@ import {
 } from '@mui/material';
 import logoImage from '../assets/images/image.png';
 import {
-  Menu as MenuIcon,
   LayoutDashboard,
   Wand2,
   Target,
@@ -31,20 +30,16 @@ import {
   Users,
   UserCircle,
   FileBarChart,
-  AlertTriangle,
-  Sliders,
-  Link,
-  BarChart3,
-  Download,
   Settings,
   HelpCircle,
-  Settings2 as OperatingModelIcon,
-  Search as SearchIcon,
-  ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
   LogOut as LogOutIcon,
   Bell as BellIcon,
   ChevronDown as ChevronDownIcon,
+  Menu as MenuIcon,
+  Search as SearchIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Settings2 as OperatingModelIcon
 } from 'lucide-react';
 import { auth } from '../config/firebase';
 
@@ -56,18 +51,18 @@ const mainMenuItems = [
 ];
 
 const menuItems = [
-  { text: 'Wizard', icon: Wand2, path: '/dashboard/wizard' },
+  { text: 'Framework Wizard', icon: Wand2, path: '/dashboard/wizard' },
   { text: 'Program Scope', icon: Target, path: '/dashboard/samprogramscope' },
-  { text: 'Operating Model', icon: OperatingModelIcon, path: '/dashboard/operating-model' },
-  { text: 'Planner', icon: CalendarDays, path: '/dashboard/planner' },
-  { text: 'Organization', icon: Users, path: '/dashboard/organization' },
-  { text: 'Stakeholders', icon: UserCircle, path: '/dashboard/stakeholders' },
-  { text: 'Reports', icon: FileBarChart, path: '/dashboard/reports' },
-  { text: 'Risk Assessment', icon: AlertTriangle, path: '/dashboard/risk' },
-  { text: 'Variables', icon: Sliders, path: '/dashboard/variables/form' },
-  { text: 'Connectors', icon: Link, path: '/dashboard/connectors' },
-  { text: 'Graphics', icon: BarChart3, path: '/dashboard/graphics' },
-  { text: 'Exports', icon: Download, path: '/dashboard/exports' },
+  { text: 'Operating Model & Software Vendors', icon: OperatingModelIcon, path: '/dashboard/operating-model' },
+  { text: 'Roles, Responsibilities & Governance', icon: CalendarDays, path: '/dashboard/planner' },
+  { text: 'Strategic Objectives & Maturity', icon: Users, path: '/dashboard/organization' },
+  // { text: 'Stakeholders', icon: UserCircle, path: '/dashboard/stakeholders' },
+  { text: 'Tooling & Data Management', icon: FileBarChart, path: '/dashboard/tooling-diagram' },
+  // { text: 'Risk Assessment', icon: AlertTriangle, path: '/dashboard/risk' },
+  // { text: 'Variables', icon: Sliders, path: '/dashboard/variables/form' },
+  // { text: 'Connectors', icon: Link, path: '/dashboard/connectors' },
+  // { text: 'Graphics', icon: BarChart3, path: '/dashboard/graphics' },
+  // { text: 'Exports', icon: Download, path: '/dashboard/exports' },
 ];
 
 const bottomMenuItems = [
@@ -214,10 +209,12 @@ export default function Layout({ children }) {
                 mr: minimized ? 0 : 2,
               }}
             >
-              <item.icon
-                size={20}
-                color={location.pathname === item.path ? '#1B2559' : undefined}
-              />
+              {item.icon && (
+                <item.icon
+                  size={20}
+                  color={location.pathname === item.path ? '#1B2559' : undefined}
+                />
+              )}
             </ListItemIcon>
             {!minimized && <ListItemText primary={item.text} />}
           </ListItemButton>
