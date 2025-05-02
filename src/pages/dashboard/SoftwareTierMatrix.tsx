@@ -24,15 +24,6 @@ const categoriesList = [
 
 const metricTypes = ["Currency", "Percent", "Level", "Yes/No"] as const;
 const cutoffTypes = ["Exact", "Range"] as const;
-const tierCutoffSortingOptions = [
-  "One Cutoff to make the Tier",
-  "All Cutoffs to make the Tier",
-] as const;
-
-interface VendorData {
-  name: string;
-  values: string[];
-}
 
 const SoftwareTierMatrix: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"setup" | "published">("setup");
