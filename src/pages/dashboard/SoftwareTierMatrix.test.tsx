@@ -11,8 +11,8 @@ describe("SoftwareTierMatrix", () => {
         <SoftwareTierMatrix />
       </BrowserRouter>
     );
-    expect(screen.getByLabelText(/Tiers/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Categories/i)).toBeInTheDocument();
+    expect(screen.getByLabelText("Number of Tiers")).toBeInTheDocument();
+    expect(screen.getByLabelText("Number of Categories")).toBeInTheDocument();
   });
 
   it("adds a new vendor", () => {
@@ -21,7 +21,7 @@ describe("SoftwareTierMatrix", () => {
         <SoftwareTierMatrix />
       </BrowserRouter>
     );
-    const input = screen.getByPlaceholderText("New Vendor");
+    const input = screen.getByPlaceholderText("Enter vendor name");
     const btn = screen.getByRole("button", { name: /Add Vendor/i });
     fireEvent.change(input, { target: { value: "Vendor X" } });
     fireEvent.click(btn);
