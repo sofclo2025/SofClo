@@ -39,7 +39,9 @@ import {
   Search as SearchIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
-  Settings2 as OperatingModelIcon
+  Settings2 as OperatingModelIcon,
+  AlertTriangle,
+  Download
 } from 'lucide-react';
 import { auth } from '../config/firebase';
 
@@ -47,22 +49,22 @@ const drawerWidth = 280;
 const minimizedDrawerWidth = 80;
 
 const mainMenuItems = [
-  { text: 'Overview', icon: LayoutDashboard, path: '/dashboard' },
+  { text: 'Framework Overview', icon: LayoutDashboard, path: '/dashboard' },
 ];
 
 const menuItems = [
   { text: 'Framework Wizard', icon: Wand2, path: '/dashboard/wizard' },
   { text: 'Program Scope', icon: Target, path: '/dashboard/samprogramscope' },
-  { text: 'Operating Model & Software Vendors', icon: OperatingModelIcon, path: '/dashboard/operating-model' },
+  { text: 'Operating Model', icon: OperatingModelIcon, path: '/dashboard/operating-model' },
+  { text: 'Software Vendors', icon: UserCircle, path: '/dashboard/stakeholders' },
   { text: 'Roles, Responsibilities & Governance', icon: CalendarDays, path: '/dashboard/planner' },
   { text: 'Strategic Objectives & Maturity', icon: Users, path: '/dashboard/organization' },
-  // { text: 'Stakeholders', icon: UserCircle, path: '/dashboard/stakeholders' },
   { text: 'Tooling & Data Management', icon: FileBarChart, path: '/dashboard/tooling-diagram' },
-  // { text: 'Risk Assessment', icon: AlertTriangle, path: '/dashboard/risk' },
+  { text: 'Presentations', icon: AlertTriangle, path: '/dashboard/risk' },
   // { text: 'Variables', icon: Sliders, path: '/dashboard/variables/form' },
   // { text: 'Connectors', icon: Link, path: '/dashboard/connectors' },
   // { text: 'Graphics', icon: BarChart3, path: '/dashboard/graphics' },
-  // { text: 'Exports', icon: Download, path: '/dashboard/exports' },
+  { text: 'Exports', icon: Download, path: '/dashboard/exports' },
 ];
 
 const bottomMenuItems = [
